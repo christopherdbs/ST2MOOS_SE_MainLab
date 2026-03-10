@@ -1,0 +1,39 @@
+### Delete programmer with unknown id 1999
+DELETE http://localhost:8080/programmers/1999
+
+### Delete programmer with id 7
+DELETE http://localhost:8080/programmers/7
+
+### Add a new programmer
+POST http://localhost:8080/programmers
+Content-Type: application/json
+
+{
+  "name": "Lovelace",
+  "firstName": "Ada",
+  "address": "London",
+  "favoriteLanguage": "Assembly",
+  "favoriteBook": "Note G",
+  "salary": 85000.0
+}
+
+### Mise à jour complète du programmeur ID 11
+PUT http://localhost:8080/programmers/11
+Content-Type: application/json
+
+{
+  "name": "Lovelace",
+  "firstName": "Ada",
+  "address": "London, UK",
+  "favoriteLanguage": "Assembly",
+  "favoriteBook": "The Analytical Engine Paper",
+  "salary": 95000.0
+}
+
+### Mise à jour partielle du programmeur ID 11
+PUT http://localhost:8080/programmers/11
+Content-Type: application/json
+
+{
+  "address": "125 Baker Street"
+}
