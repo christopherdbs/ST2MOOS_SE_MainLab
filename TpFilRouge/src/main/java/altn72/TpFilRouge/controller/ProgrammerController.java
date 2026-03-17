@@ -1,6 +1,7 @@
 package altn72.TpFilRouge.controller;
 
 import altn72.TpFilRouge.model.Programmer;
+import altn72.TpFilRouge.model.ProgrammerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -16,6 +17,10 @@ public class ProgrammerController {
 
     @Autowired
     ProgrammerService programmerService;
+
+    public ProgrammerController(ProgrammerService programmerService) {
+        this.programmerService = programmerService;
+    }
 
     @GetMapping("/programmers")
     public String displayProgrammerInfo(Model model) {
