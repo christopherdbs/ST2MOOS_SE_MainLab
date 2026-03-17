@@ -36,3 +36,10 @@ Using constructor injection helps to give this extra security as it ensures the 
 4.5 
 
 The difference between PUT and PATCH is that PUT updates the entire object while PATCH is for partial modification. It means that if we use PUT, if you send only partial modification and not the entire object updated, the other values could be erased and set to null. 
+
+
+5.2
+It gives this error : 
+Error resolving template [programmers/1], template might not exist or might not be accessible by any of the configured Template Resolvers
+I think it is because HTML formular only supports GET and POST, which is why we couldn't do a delete action directly in the browser during last TP. 
+Instead it will just try to make a GET of the page as seen in the error.

@@ -3,26 +3,29 @@ package altn72.TpFilRouge.controller;
 import altn72.TpFilRouge.model.Programmer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
 
-@RestController
+//@RestController
+@Controller
 public class ProgrammerController {
 
     @Autowired
     ProgrammerService programmerService;
 
     @GetMapping("/programmers")
-    public List<Programmer> displayProgrammerInfo() {
+    public String displayProgrammerInfo(Model model) {
 
         List<Programmer> programmers;
         programmers = programmerService.getProgrammers();
 
         programmers.forEach(System.out::println);
-
-        return programmers;
+        model.addAttribute("programmers", programmers);
+        return "listeProgrammeurs";
     }
 
     @GetMapping("/programmers/{id}")
@@ -30,20 +33,43 @@ public class ProgrammerController {
         return programmerService.getProgrammer(id);
     }
 
+    @GetMapping("/programmers/last")
+    public String getLast(Model model){
+        Programmer last = programmerService.getLastProgrammer();
+        model.addAttribute("programmer", last);
+        return "detailsProgrammeur";
+    }
+
     @DeleteMapping("/programmers/{id}")
-    public ResponseEntity<Map<String, String>> delete(@PathVariable("id") int id) {
+    public String delete(@PathVariable("id") int id) {
         boolean deleted = programmerService.deleteProgrammer(id);
         if (deleted) {
-            return ResponseEntity.ok(Map.of("message", "Deleted successfully", "status", "success"));
+           // return ResponseEntity.ok(Map.of("message", "Deleted successfully", "status", "success"));
+            return "redirect:/programmers";
         } else {
-            return ResponseEntity.status(404).body(Map.of("message", "Programmer not found", "status", "error"));
+            return "Delete has failed";
         }
     }
 
+    @GetMapping("/programmers/add")
+    public String showAddForm(Model model) {
+        model.addAttribute("programmer", new Programmer());
+
+        return "nouveauProgrammeur";
+    }
+
     @PostMapping("/programmers")
-    public Programmer create(@RequestBody Programmer programmer) {
-        Programmer newProgrammer = programmerService.addProgrammer(programmer);
-        return newProgrammer;
+    public String create(@ModelAttribute("programmer") Programmer programmer) {
+        programmerService.addProgrammer(programmer);
+        return "redirect:/programmers";
+    }
+
+
+    @GetMapping("/programmers/edit/{id}")
+    public String showEditForm(@PathVariable("id") Integer id, Model model) {
+        Programmer programmer = getOne(id);
+        model.addAttribute("programmer", programmer);
+        return "nouveauProgrammeur";
     }
 
     @PutMapping("/programmers/{id}")

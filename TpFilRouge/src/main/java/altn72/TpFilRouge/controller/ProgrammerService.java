@@ -2,6 +2,7 @@ package altn72.TpFilRouge.controller;
 
 import altn72.TpFilRouge.model.Programmer;
 import altn72.TpFilRouge.model.ProgrammerRepository;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -10,21 +11,28 @@ import java.util.List;
 
 @Service
 public class ProgrammerService {
-    @Autowired
-    private ProgrammerRepository programmerRepository;
 
-    @Transactional
+    private final ProgrammerRepository programmerRepository;
+
+    public ProgrammerService(ProgrammerRepository programmerRepository) {
+        this.programmerRepository = programmerRepository;
+    }
+
     public List<Programmer> getProgrammers( ){
         return programmerRepository.findAll();
     }
 
-    @Transactional
     public Programmer getProgrammer(int id) {
         return programmerRepository.findById(id)
                 .orElseGet(() -> {
                     System.out.println("This programmer does not exist");
                     return null;
                 });
+    }
+
+    public Programmer getLastProgrammer() {
+        List<Programmer> programmers = getProgrammers();
+        return programmers.isEmpty() ? null : programmers.get(programmers.size() - 1);
     }
 
     @Transactional
@@ -45,22 +53,17 @@ public class ProgrammerService {
     }
 
     @Transactional
-    public Programmer updateProgrammer(int id, Programmer updatedData) {
-        return programmerRepository.findById(id)
-                .map(p -> {
-                    if (updatedData.getName() != null) p.setName(updatedData.getName());
-                    if (updatedData.getFirstName() != null) p.setFirstName(updatedData.getFirstName());
-                    if (updatedData.getAddress() != null) p.setAddress(updatedData.getAddress());
-                    if (updatedData.getFavoriteLanguage() != null) p.setFavoriteLanguage(updatedData.getFavoriteLanguage());
-                    if (updatedData.getFavoriteBook() != null) p.setFavoriteBook(updatedData.getFavoriteBook());
-                    if (updatedData.getSalary() != null) p.setSalary(updatedData.getSalary());
-
-                    return programmerRepository.save(p);
-                })
+    public Programmer updateProgrammer(int id, Programmer updatedProgrammer) {
+         Programmer programmerToUpdate = programmerRepository.findById(id)
                 .orElseGet(() -> {
                     System.out.println("Update failed: Programmer " + id + " not found.");
                     return null;
                 });
+        if (programmerToUpdate != null) {
+            BeanUtils.copyProperties(updatedProgrammer, programmerToUpdate, "id");
+            return programmerRepository.save(programmerToUpdate);
+        }
+        return null;
     }
 
 }
