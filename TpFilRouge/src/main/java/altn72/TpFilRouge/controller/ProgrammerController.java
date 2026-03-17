@@ -15,8 +15,7 @@ import java.util.Map;
 @Controller
 public class ProgrammerController {
 
-    @Autowired
-    ProgrammerService programmerService;
+    private final ProgrammerService programmerService;
 
     public ProgrammerController(ProgrammerService programmerService) {
         this.programmerService = programmerService;
